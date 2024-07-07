@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wallpaper_app/view/widgets/category_block.dart';
 import 'package:wallpaper_app/view/widgets/custom_appbar.dart';
 import 'package:wallpaper_app/view/widgets/search_bar.dart';
 
@@ -22,7 +23,21 @@ class Home extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
-            Searchbar()
+            Searchbar(),
+
+            Container(
+              margin: EdgeInsets.symmetric(
+                vertical: 20
+              ),
+              height: 50,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 30,
+                  itemBuilder:(context, index) {
+                    return CategoryBlock();
+                  },
+              ),
+            )
           ],
         ),
       ),
