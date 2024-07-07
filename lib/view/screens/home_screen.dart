@@ -37,10 +37,37 @@ class Home extends StatelessWidget {
                     return CategoryBlock();
                   },
               ),
+            ),
+
+            Expanded(
+
+              child: GridView.builder(
+                physics: BouncingScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    mainAxisExtent: 400
+
+                  ),
+                  itemCount: 6,
+                  itemBuilder: (context, index) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.network("https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                      fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+              ),
             )
+
+
           ],
         ),
       ),
+
+
     );
   }
 }
