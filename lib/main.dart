@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wallpaper_app/view/screens/category.dart';
 import 'package:wallpaper_app/view/screens/home_screen.dart';
 
 
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Home(),
+      home: CategoryScreen(),
     );
   }
 }
