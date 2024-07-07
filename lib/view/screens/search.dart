@@ -1,12 +1,41 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wallpaper_app/view/widgets/category_block.dart';
+import 'package:wallpaper_app/controller/api_service.dart';
+import 'package:wallpaper_app/model/apiDataModel.dart';
+
 import 'package:wallpaper_app/view/widgets/custom_appbar.dart';
 import 'package:wallpaper_app/view/widgets/search_bar.dart';
 
-class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
+class SearchScreen extends StatefulWidget {
+final  String query;
+  const SearchScreen({super.key, required this.query});
 
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  
+  ApiDataModel? apiDataModel;
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    get();
+  }
+  
+  void get() async{
+    try{
+      apiDataModel=await ApiService().GetSearchWallpaper(widget.query);
+      setState(() {
+
+      });
+    }catch(e){
+      print(e);
+    }
+}
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,11 +48,14 @@ class SearchScreen extends StatelessWidget {
         ),
       ),
 
-      body: Container(
+      body:apiDataModel !=null? Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
             Searchbar(),
+            SizedBox(
+              height: 15,
+            ),
 
             Expanded(
 
@@ -36,11 +68,11 @@ class SearchScreen extends StatelessWidget {
                     mainAxisExtent: 400
 
                 ),
-                itemCount: 6,
+                itemCount: apiDataModel!.photos!.length,
                 itemBuilder: (context, index) {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.network("https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    child: Image.network(apiDataModel!.photos![index].src!.portrait!,
                       fit: BoxFit.cover,
                     ),
                   );
@@ -51,6 +83,8 @@ class SearchScreen extends StatelessWidget {
 
           ],
         ),
+      ):Center(
+        child: CircularProgressIndicator(),
       ),
 
 
