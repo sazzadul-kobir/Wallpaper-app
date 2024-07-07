@@ -1,14 +1,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wallpaper_app/controller/api_service.dart';
+import 'package:wallpaper_app/model/apiDataModel.dart';
 import 'package:wallpaper_app/view/widgets/category_block.dart';
 import 'package:wallpaper_app/view/widgets/custom_appbar.dart';
 import 'package:wallpaper_app/view/widgets/search_bar.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+   get();
+  }
+  void get()async{
+    try{
+      ApiDataModel dataModel=await  ApiService().FetchingTrendingWallpaper();
+      print(dataModel.photos![1].src!.portrait);
+
+    }catch(e){}
+
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar:AppBar(
