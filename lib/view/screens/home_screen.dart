@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wallpaper_app/controller/api_service.dart';
 import 'package:wallpaper_app/model/apiDataModel.dart';
+import 'package:wallpaper_app/view/screens/full_screen.dart';
 import 'package:wallpaper_app/view/widgets/category_block.dart';
 import 'package:wallpaper_app/view/widgets/custom_appbar.dart';
 import 'package:wallpaper_app/view/widgets/search_bar.dart';
@@ -69,19 +70,32 @@ class _HomeState extends State<Home> {
             ),
           ),
           SliverGrid(
+
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
+
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
               mainAxisExtent: 400,
             ),
             delegate: SliverChildBuilderDelegate(
+
                   (context, index) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                    dataModel!.photos![index].src!.portrait!,
-                    fit: BoxFit.cover,
+                return InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return FullScreen(imgurl:dataModel!.photos![index].src!.portrait!);
+                    },));
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Hero(
+                      tag: dataModel!.photos![index].src!.portrait!,
+                      child: Image.network(
+                        dataModel!.photos![index].src!.portrait!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 );
               },

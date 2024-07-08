@@ -6,6 +6,8 @@ import 'package:wallpaper_app/model/apiDataModel.dart';
 import 'package:wallpaper_app/view/widgets/custom_appbar.dart';
 import 'package:wallpaper_app/view/widgets/search_bar.dart';
 
+import 'full_screen.dart';
+
 class SearchScreen extends StatefulWidget {
 final  String query;
   const SearchScreen({super.key, required this.query});
@@ -70,10 +72,22 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 itemCount: apiDataModel!.photos!.length,
                 itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(apiDataModel!.photos![index].src!.portrait!,
-                      fit: BoxFit.cover,
+                  return InkWell(
+                    onTap:(){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return FullScreen(imgurl:apiDataModel!.photos![index].src!.portrait!);
+                        },));
+                      },
+
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Hero(
+
+                        tag: apiDataModel!.photos![index].src!.portrait!,
+                        child: Image.network(apiDataModel!.photos![index].src!.portrait!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   );
                 },
