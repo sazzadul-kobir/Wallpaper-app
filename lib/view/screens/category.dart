@@ -1,11 +1,46 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wallpaper_app/controller/api_service.dart';
+import 'package:wallpaper_app/model/apiDataModel.dart';
+import 'package:wallpaper_app/view/screens/full_screen.dart';
 import 'package:wallpaper_app/view/widgets/category_block.dart';
 import 'package:wallpaper_app/view/widgets/custom_appbar.dart';
 import 'package:wallpaper_app/view/widgets/search_bar.dart';
 
-class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({super.key});
+class CategoryScreen extends StatefulWidget {
+
+  final String HeaderImgUrl;
+  final String Searchword;
+
+  const CategoryScreen({super.key, required this.HeaderImgUrl, required this.Searchword});
+
+  @override
+  State<CategoryScreen> createState() => _CategoryScreenState();
+}
+
+class _CategoryScreenState extends State<CategoryScreen> {
+
+  ApiDataModel? apiDataModel;
+
+  void get()async{
+    try{
+      apiDataModel=await ApiService().GetSearchWallpaper(widget.Searchword);
+      setState(() {
+
+      });
+    }catch(e){
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    get();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +54,7 @@ class CategoryScreen extends StatelessWidget {
         ),
       ),
 
-      body: Container(
+      body:apiDataModel !=null? Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
@@ -27,7 +62,7 @@ class CategoryScreen extends StatelessWidget {
             Stack(
               children: [
                 Image.network(
-                    "https://images.pexels.com/photos/2533092/pexels-photo-2533092.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                  widget.HeaderImgUrl,
                   height: 150,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -35,10 +70,10 @@ class CategoryScreen extends StatelessWidget {
 
                 Container(
                   height: 150,
-                  color: Colors.black38,
+                  color: Colors.black54,
                 ),
                 Positioned(
-                  left: 120,
+                  left: 140,
                   top: 40,
                   child: Column(
                     children: [
@@ -49,9 +84,9 @@ class CategoryScreen extends StatelessWidget {
                         fontWeight: FontWeight.w300
                       ),
                       ),
-                      Text("van",
+                      Text(widget.Searchword,
                          style: TextStyle(
-                          fontSize: 30,
+                          fontSize: 40,
                           color: Colors.white,
                           fontWeight: FontWeight.w600
                       )
@@ -77,12 +112,20 @@ class CategoryScreen extends StatelessWidget {
                     mainAxisExtent: 400
 
                 ),
-                itemCount: 6,
+                itemCount: apiDataModel!.photos!.length,
                 itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network("https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                      fit: BoxFit.cover,
+                  return InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder:(context) {
+                        return FullScreen(imgurl: apiDataModel!.photos![index].src!.portrait!);
+                      }, ));
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.network(
+                        apiDataModel!.photos![index].src!.portrait!,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   );
                 },
@@ -92,7 +135,8 @@ class CategoryScreen extends StatelessWidget {
 
           ],
         ),
-      ),
+      )
+          :Center(child: CircularProgressIndicator(),),
 
 
     );

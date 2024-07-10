@@ -2,7 +2,11 @@
 import 'package:flutter/material.dart';
 
 class CategoryBlock extends StatelessWidget {
-  const CategoryBlock({super.key});
+
+  final String imgUrl;
+  final String label;
+
+  const CategoryBlock({super.key, required this.imgUrl, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +19,8 @@ class CategoryBlock extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.network(
+              imgUrl,
 
-
-                "https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
               height: 50,
               width: 100,
               fit: BoxFit.cover,
@@ -35,7 +38,7 @@ class CategoryBlock extends StatelessWidget {
           Positioned(
             left: 30,
             top: 15,
-            child: Text("Cars",style: TextStyle(
+            child: Text(label,style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w500
             ),
