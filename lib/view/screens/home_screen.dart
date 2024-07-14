@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wallpaper_app/blocs/Internet_bloc/connection_bloc.dart';
+import 'package:wallpaper_app/blocs/Internet_bloc/connection_state.dart';
 import 'package:wallpaper_app/controller/api_service.dart';
 import 'package:wallpaper_app/model/apiDataModel.dart';
 import 'package:wallpaper_app/view/screens/category.dart';
@@ -18,16 +21,37 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   ApiDataModel? dataModel;
 
-
-  List<Map<String,dynamic>> CategoryListmap=[
-    {"label":"Car","photo":"https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"},
-    {"label":"Nature","photo":"https://images.pexels.com/photos/707344/pexels-photo-707344.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"},
-    {"label":"True","photo":"https://images.pexels.com/photos/1250260/pexels-photo-1250260.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"},
-    {"label":"Road","photo":"https://images.pexels.com/photos/229014/pexels-photo-229014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"},
-    {"label":"Vintage","photo":"https://images.pexels.com/photos/247929/pexels-photo-247929.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"},
-    {"label":"night","photo":"https://images.pexels.com/photos/631477/pexels-photo-631477.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"},
-
-
+  List<Map<String, dynamic>> CategoryListmap = [
+    {
+      "label": "Car",
+      "photo":
+          "https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+      "label": "Nature",
+      "photo":
+          "https://images.pexels.com/photos/707344/pexels-photo-707344.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+      "label": "True",
+      "photo":
+          "https://images.pexels.com/photos/1250260/pexels-photo-1250260.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+      "label": "Road",
+      "photo":
+          "https://images.pexels.com/photos/229014/pexels-photo-229014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+      "label": "Vintage",
+      "photo":
+          "https://images.pexels.com/photos/247929/pexels-photo-247929.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+      "label": "night",
+      "photo":
+          "https://images.pexels.com/photos/631477/pexels-photo-631477.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
   ];
 
   @override
@@ -56,81 +80,92 @@ class _HomeState extends State<Home> {
           word2: " Wallpaper",
         ),
       ),
-      body: dataModel != null
-          ? CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                children: [
-                  Searchbar(),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 20),
-                    height: 50,
-                    child: ListView.builder(
-                      physics: PageScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: CategoryListmap.length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) {
-                              return CategoryScreen(HeaderImgUrl: CategoryListmap[index]["photo"], Searchword: CategoryListmap[index]["label"]);
-                            },));
-                          },
-                          child: CategoryBlock(
-                            label: CategoryListmap[index]["label"],
-                            imgUrl: CategoryListmap[index]["photo"],
+      body: BlocBuilder<ConnectionCheckBloc, ConnectionCheckState>(
+        builder: (context, state) {
+          if(state is InitialState){
+            return Center(child:  CircularProgressIndicator(),);
+          }else if(state is DisConnectedState){
+            print("vandy");
+            return Center(child: Text("Internet Disconnected"),);
+          }else if(state is ConnectedState){
+            return dataModel != null
+                ? CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      children: [
+                        Searchbar(),
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 20),
+                          height: 50,
+                          child: ListView.builder(
+                            physics: PageScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: CategoryListmap.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                    return CategoryScreen(HeaderImgUrl: CategoryListmap[index]["photo"], Searchword: CategoryListmap[index]["label"]);
+                                  },));
+                                },
+                                child: CategoryBlock(
+                                  label: CategoryListmap[index]["label"],
+                                  imgUrl: CategoryListmap[index]["photo"],
 
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          SliverGrid(
+                ),
+                SliverGrid(
 
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
 
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              mainAxisExtent: 400,
-            ),
-            delegate: SliverChildBuilderDelegate(
-
-                  (context, index) {
-                return InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return FullScreen(imgurl:dataModel!.photos![index].src!.portrait!);
-                    },));
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Hero(
-                      tag: dataModel!.photos![index].src!.portrait!,
-                      child: Image.network(
-                        dataModel!.photos![index].src!.portrait!,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    mainAxisExtent: 400,
                   ),
-                );
-              },
-              childCount: dataModel!.photos!.length,
-            ),
-          ),
-        ],
-      )
-          : Center(
-        child: CircularProgressIndicator(),
+                  delegate: SliverChildBuilderDelegate(
+
+                        (context, index) {
+                      return InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return FullScreen(imgurl:dataModel!.photos![index].src!.portrait!);
+                          },));
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Hero(
+                            tag: dataModel!.photos![index].src!.portrait!,
+                            child: Image.network(
+                              dataModel!.photos![index].src!.portrait!,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    childCount: dataModel!.photos!.length,
+                  ),
+                ),
+              ],
+            )
+                : Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return Container();
+        },
       ),
     );
   }
 }
-

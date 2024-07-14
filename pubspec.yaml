@@ -43,6 +43,10 @@ dependencies:
   permission_handler: ^11.3.1
   gallery_saver: 2.3.2
   open_filex: ^4.4.0
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
+  connectivity_plus: ^6.0.3
+  bloc: ^8.1.4
 
 
 
